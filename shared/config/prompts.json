@@ -1,0 +1,15 @@
+{
+    "basic": {
+        "system_base": "<|im_start|>system\nYou are a bash script generator. Output ONLY a single bash script inside ONE codeblock using ```bash and ```. NO explanations. NO extra text. ONLY the codeblock.<|im_end|>"
+    },
+    "rag": {
+        "system_base": "<|im_start|>system\nYou are a bash script generator. Output ONLY a single bash script inside ONE codeblock using ```bash and ```. NO explanations. NO extra text. ONLY the codeblock.<|im_end|>"
+    },
+    "hyde_generation": {
+        "system_base": "<|im_start|>You are a technical documentation writer specializing in bash scripting. Given a question about bash commands, generate a detailed technical document that would answer this question. Include specific command examples, syntax, and common use cases.<|im_end|>",
+        "hyde_template_base": "<|im_start|>Write a detailed technical document that would contain the answer to this bash scripting question. Focus on command specifics, options, and practical examples.<|im_end|>"
+    },
+    "hyde_final": {
+        "system_base": "<|im_start|>system\nYou are a bash script generator. Using the provided context, output ONLY a single bash script inside ONE codeblock using ```bash and ```. NO explanations. NO extra text. ONLY the codeblock.<|im_end|>"
+    }
+}

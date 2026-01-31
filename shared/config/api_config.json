@@ -1,0 +1,4 @@
+{
+    "generative_module": "http://arabizi-module-api:80",
+    "streamlit_module": "http://arabizi-streamlit-module-api:80"
+}

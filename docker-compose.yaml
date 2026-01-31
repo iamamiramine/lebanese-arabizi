@@ -1,0 +1,94 @@
+version: '2.3'
+
+services:
+  arabizi-module:
+    build:
+      context: ./arabizi-module-api
+      dockerfile: Dockerfile
+    image: arabizi-module
+    container_name: arabizi-module-api
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES}
+      - LANGSMITH_TRACING=${LANGSMITH_TRACING}
+      - LANGSMITH_ENDPOINT=${LANGSMITH_ENDPOINT}
+      - LANGSMITH_API_KEY=${LANGSMITH_API_KEY}
+      - LANGSMITH_PROJECT=${LANGSMITH_PROJECT}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - HF_HOME=${HF_HOME}
+      - HF_TOKEN=${HF_TOKEN}
+      - OLLAMA_MODELS=${OLLAMA_MODELS}
+      - MONGODB_URI=${MONGODB_URI}
+      - MONGODB_DATABASE=${MONGODB_DATABASE}
+    ports:
+      - "7576:80"
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data
+      - ./shared:/app/shared
+    # runtime: nvidia
+    networks:
+      - arabizi-network
+    depends_on:
+      arabizi-mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 300s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # ollama-container:
+  #   image: ollama/ollama
+  #   volumes:
+  #     - ./data/ollama:/root/.ollama
+  #   ports:
+  #     - 9050:11434
+  #   networks:
+  #     - generative-cybersecurity-network
+
+  arabizi-streamlit-module:
+    build:
+      context: ./arabizi-streamlit-module-api
+      dockerfile: Dockerfile
+    image: arabizi-streamlit-module
+    container_name: arabizi-streamlit-module-api
+    ports:
+      - "7501:8501"
+    volumes:
+      - ./shared:/app/shared
+    networks:
+      - arabizi-network
+    depends_on:
+      arabizi-module:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/healthz"]
+      interval: 300s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  arabizi-mongodb:
+    image: mongodb/mongodb-community-server:latest
+    container_name: arabizi-mongodb
+    restart: always
+    ports:
+      - "9001:27017"
+    environment:
+      MONGODB_INITDB_ROOT_USERNAME: mongouser
+      MONGODB_INITDB_ROOT_PASSWORD: mongopassword
+    volumes:
+      - ./data/mongodb:/app/data/db
+    networks:
+      - arabizi-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 300s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+networks:
+  arabizi-network:
+    external: true

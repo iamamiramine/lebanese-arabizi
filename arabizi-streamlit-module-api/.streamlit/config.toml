@@ -1,0 +1,19 @@
+[server]
+headless = true
+runOnSave = false
+enableCORS = false
+enableXsrfProtection = false
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+primaryColor = "#D40000"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#D9ECFF"
+textColor = "#1A1A1A"
+#font = "sans-serif"
+base = "light"
+
+[logger]
+level = "info"
